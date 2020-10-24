@@ -50,7 +50,31 @@ function base64urlencode(sourceValue) {
 }
 
 
+function getAuthCode() {
+    var state = document.getElementById("stateValue").innerHTML;
+    var codeChallenge = document.getElementById("codeChallengeValue").innerHTML;
 
+    var authorizationURL = "http://localhost:8080/auth/realms/appsdeveloperblog/protocol/openid-connect/auth";
+    authorizationURL += "?client_id=photo-app-PKCE-client";
+    authorizationURL += "&response_type=code";
+    authorizationURL += "&scope=openid";
+    authorizationURL += "&redirect_uri=http://localhost:8181/authcodeReader.html"; 
+    authorizationURL += "&state=" + state;
+    authorizationURL += "&code_challenge=" + codeChallenge;
+    authorizationURL += "&code_challenge_method=S256";
+    
+    window.open(authorizationURL, 'authorizationRequestWindow', 'width=800,height=600,left=200,top=200');
+}
+
+function postAuthorize(state, authCode) {
+	var originalStateValue = document.getElementById("stateValue").innerHTML;
+	
+	if(state === originalStateValue) {
+		requestTokens(authCode);
+	} else {
+		alert("Invalid state value received");
+	} 
+}
 
 </script>
 
